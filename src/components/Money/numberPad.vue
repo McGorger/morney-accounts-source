@@ -6,16 +6,21 @@
     <label class="notes">
       <Icon name="note" />
       <span class="name">备注:</span>
-      <input @input="notesValue($event.target.value)" type="text" :placeholder="'写点备注吧'" />
+      <input
+        :value="notes"
+        @input="notesValue($event.target.value)"
+        type="text"
+        :placeholder="'写点备注吧'"
+      />
     </label>
     <div class="buttons">
       <div class="button-type">
         <button
-          v-for="item in Types"
-          :key="item"
-          :class="{selected:item===type}"
-          @click="select(item)"
-        >{{ item }}</button>
+          v-for="item in dataSource"
+          :key="item.value"
+          :class="{selected:type === item.value}"
+          @click="select(item.value)"
+        >{{ item.text }}</button>
       </div>
       <div class="button-number">
         <button @click="inputContent">1</button>
@@ -32,7 +37,9 @@
         <button @click="ok" class="ok">完成</button>
         <button @click="inputContent">.</button>
         <button @click="inputContent">0</button>
-        <button @click="remove">X</button>
+        <button @click="remove">
+          <Icon name="delete" />
+        </button>
       </div>
     </div>
   </div>
@@ -45,13 +52,24 @@ import { EventBus } from "@/event-bus.ts";
 console.log(EventBus);
 @Component
 export default class NumberPad extends Vue {
-  //   @Prop(Number) readonly value!: number;
-  //    output = this.value.toString();
-  Types: String[] = ["收入", "支出"];
-  type: string = "收入";
-  output: string = "0";
+  @Prop(Number) readonly value!: number;
+  output = this.value.toString();
+  @Prop(String) readonly notes!: string;
+  note = this.notes;
+  @Prop({ required: true, type: Array })
+  dataSource!: DataSourceItem[];
+  @Prop(String) readonly  type!: string ;
   select(item: string) {
-    this.type = item;
+     this.$emit('update:type',item);
+    EventBus.$emit("getSelectedStatus", item);
+  }
+  mounted() {
+    this.getSelectedStatus();
+  }
+  getSelectedStatus() {
+    EventBus.$on("getSelectedStatus", (res: string) => {
+       this.$emit('update:type',res);
+    });
   }
   inputContent(event: MouseEvent) {
     const button = event.target as HTMLButtonElement;
@@ -69,7 +87,19 @@ export default class NumberPad extends Vue {
     }
     if (this.output.indexOf(".") >= 0 && input === ".") {
       if (this.output.includes("+") || this.output.includes("-")) {
-        if (this.output.endsWith("+") && this.output.startsWith("-")) {
+        if (this.output.includes("+")) {
+          const newOutput = this.output.split("+");
+          if (newOutput[1].indexOf(".") >= 0) {
+            return;
+          }
+        } else if (this.output.includes("-")) {
+          const newOutput = this.output.split("-");
+
+          if (newOutput[newOutput.length - 1].indexOf(".") >= 0) {
+            return;
+          }
+        }
+        if (this.output.endsWith("+")) {
           return;
         }
       } else {
@@ -77,27 +107,53 @@ export default class NumberPad extends Vue {
       }
     }
     if (this.output.indexOf("+") >= 0 && input === "+") {
+      if (this.output.endsWith("+")) {
+        return;
+      }
       let newOutput = this.output.split("+");
-      this.output = (+newOutput[0] + +newOutput[1]).toString();
+      this.output = (+newOutput[0] + +newOutput[1]).toFixed(2).toString();
     }
     if (this.output.indexOf("-") >= 0 && input === "-") {
+      if (this.output.endsWith("-")) {
+        return;
+      }
       if (this.output.indexOf("+") < 0) {
         let newOutput = this.output.split("-");
-        if (this.output.indexOf("-") == 0) {
-          this.output = "-" + (+newOutput[1] + +newOutput[2]);
+        if (this.output.indexOf("-") === 0) {
+          this.output =
+            "-" +
+            (parseFloat(newOutput[1]) + parseFloat(newOutput[2])).toFixed(2);
         } else {
-          this.output = (+newOutput[0] - +newOutput[1]).toString();
+          this.output = (parseFloat(newOutput[0]) - parseFloat(newOutput[1]))
+            .toFixed(2)
+            .toString();
         }
       }
     }
 
     if (this.output.indexOf("-") >= 0 && input === "+") {
+      if (this.output.endsWith("-")) {
+        return;
+      }
       let newOutput = this.output.split("-");
-      this.output = (+newOutput[0] - +newOutput[1]).toString();
+      if (this.output.startsWith("-")) {
+        this.output = (parseFloat(newOutput[1]) - parseFloat(newOutput[2]))
+          .toFixed(2)
+          .toString();
+      } else {
+        this.output = (parseFloat(newOutput[0]) - parseFloat(newOutput[1]))
+          .toFixed(2)
+          .toString();
+      }
     }
     if (this.output.indexOf("+") >= 0 && input === "-") {
+      if (this.output.endsWith("+")) {
+        return;
+      }
       let newOutput = this.output.split("+");
-      this.output = (+newOutput[0] + +newOutput[1]).toString();
+      this.output = (parseFloat(newOutput[0]) + parseFloat(newOutput[1]))
+        .toFixed(2)
+        .toString();
     }
     this.output += button.textContent;
   }
@@ -109,9 +165,42 @@ export default class NumberPad extends Vue {
     }
   }
 
-  ok() {}
+  ok() {
+    let number = parseFloat(this.output);
+    if (this.output.indexOf("+") >= 0 || this.output.indexOf("-") >= 0) {
+      if (this.output.endsWith("+") || this.output.endsWith("-")) {
+        number = parseFloat(this.output);
+        this.$emit("update:value", number);
+        this.output = "0";
+        return;
+      }
+      if (this.output.indexOf("+") >= 0) {
+        let newOutput = this.output.split("+");
+        number = +(parseFloat(newOutput[0]) + parseFloat(newOutput[1])).toFixed(
+          2
+        );
+      } else if (this.output.indexOf("-") >= 0) {
+        let newOutput = this.output.split("-");
+        if (newOutput.length === 3) {
+          alert(`${this.type}不能为负数`);
+          this.output = "0";
+          return;
+        }
+        number = +(parseFloat(newOutput[0]) - parseFloat(newOutput[1])).toFixed(
+          2
+        );
+        if (+number < 0) {
+          alert(`${this.type}不能为负数`);
+          this.output = "0";
+          return;
+        }
+      }
+    }
+    this.$emit("update:value", number);
+    this.output = "0";
+  }
   notesValue(value: string) {
-    console.log(value);
+    this.$emit("update:notes", value);
   }
 }
 </script>
