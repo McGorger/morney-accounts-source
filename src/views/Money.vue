@@ -1,37 +1,50 @@
 <template>
-<Layout show>
-  <Type :data-source="recordtypeList"/>
-  <div class="tag">
-     <Tags/>
-  </div>
-  <NumberPad :data-source="recordtypeList" :type.sync="record.type"  :value.sync="record.amount" :notes.sync="record.notes"/>
-  {{ record }}
-</Layout>
+  <Layout show>
+    <Tabs classPrefix="type" :data-source="recordtypeList" />
+    <div class="tag">
+      <Tags :currentTag="record.type" @update:value="onUpdateTags" />
+    </div>
+    <NumberPad
+      :data-source="recordtypeList"
+      @submit="saveRecord"
+      :type.sync="record.type"
+      :value.sync="record.amount"
+      :notes.sync="record.notes"
+    />
+  </Layout>
 </template>
 
 <script lang='ts'>
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import Type from '@/components/Money/Type.vue'
-import Tags from '@/components/Money/Tags.vue'
-import NumberPad from '@/components/Money/NumberPad.vue'
+import { Component } from "vue-property-decorator";
+import Tags from "@/components/Money/Tags.vue";
+import NumberPad from "@/components/Money/NumberPad.vue";
 import recordtypeList from "@/constants/recordtypeList";
 @Component({
-   components:{
-       Type,
-       Tags,
-       NumberPad,
-    }
+  components: {
+    Tags,
+    NumberPad
+  }
 })
 export default class Money extends Vue {
-     record: RecordItem = { tags: [] , notes: "", type: "-", amount: 0 };
-     recordtypeList = recordtypeList;
- }
+  record: RecordItem = {
+    tags: { text: "", value: "" },
+    notes: "",
+    type: "-",
+    amount: 0
+  };
+  recordtypeList = recordtypeList;
+  onUpdateTags(value: DataSourceItem) {
+    this.record.tags = value;
+  }
+  saveRecord(){
+      this.$store.commit("createRecord", this.record);
+  }
+}
 </script>
 
 <style scoped lang='scss'>
-
- .tag{
-    flex: 1;
- }
+.tag {
+  flex: 1;
+}
 </style>

@@ -49,7 +49,6 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { EventBus } from "@/event-bus.ts";
-console.log(EventBus);
 @Component
 export default class NumberPad extends Vue {
   @Prop(Number) readonly value!: number;
@@ -197,6 +196,7 @@ export default class NumberPad extends Vue {
       }
     }
     this.$emit("update:value", number);
+    this.$emit("submit");
     this.output = "0";
   }
   notesValue(value: string) {

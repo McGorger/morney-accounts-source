@@ -4,6 +4,7 @@ import Home from '@/views/Home.vue'
 import Money from '@/views/Money.vue'
 import Chart from '@/views/Chart.vue'
 import Edit from '@/views/Edit.vue'
+import increateTag from '@/views/increateTag.vue'
 Vue.use(VueRouter)
 
   const routes = [
@@ -26,7 +27,13 @@ Vue.use(VueRouter)
       path: '/details/edit/:id',
       name:'detailEdit',
       component:Edit
-    }
+    },
+    {
+      path: '/money/editTag/:type',
+      name:'editTag',
+      component:increateTag
+    },
+    
   
 ]
 

@@ -1,17 +1,26 @@
 <template>
-  <div class="Type">
-    <div class="left">
+  <div :class="{[classPrefix+'-Tab']:classPrefix}" class="Tab">
+    <div
+    @click="goback"
+     class="left">
       <Icon name="left" />
     </div>
-    <div class="types">
+    <div 
+    class="tabs">
+    <template v-if="classPrefix === 'type'">
       <span 
        v-for="item in dataSource"
           :key="item.value"
       :class="{select:type === item.value}"
        @click="select(item.value)">{{ item.text }}</span>
-      
+    </template>
+    <div v-else>
+        {{ dataSource }}
     </div>
-    <div class="right"></div>
+    </div>
+    <div class="right">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -21,16 +30,19 @@ import { Component, Prop } from "vue-property-decorator";
 import { EventBus } from "@/event-bus.ts";
 @Component
 export default class Type extends Vue {
-     @Prop({required:true,type:Array}) 
-     dataSource!: DataSourceItem[];
+     @Prop({required:true,type:[Array,String]}) 
+     dataSource!: DataSourceItem[]|string;
+     @Prop(String) readonly  classPrefix?: string ;
    type: string = "-";
   select(item:string){
    this.type = item;
-   console.log(this.type)
    EventBus.$emit('getSelectedStatus',item);
   }
    mounted(){
         this.getSelectedStatus();
+    }
+    goback(){
+      this.$router.back();
     }
   getSelectedStatus(){
     EventBus.$on('getSelectedStatus',(res:string)=>{
@@ -41,14 +53,16 @@ export default class Type extends Vue {
 </script>
 
 <style scoped lang='scss'>
-.Type {
+@import "~@/assets/style/helper.scss";
+.Tab {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px 10px;
-  .types {
+ &.type-Tab{
+  .tabs{
     padding: 2px 5px;
-    background: #eee;
+     background: #eee;
     border-radius: 7px;
     display: flex;
     align-items: center;
@@ -59,7 +73,19 @@ export default class Type extends Vue {
         background: #fff;
         border-radius: 7px;
       }
-    }
+    
+  } }
   }
-}
+ &.increateTag-Tab{
+   background: $font-highlight;
+   padding: 8px 5px;
+   font-weight: bold;
+   font-size: 19px;
+   border-bottom: 1px solid #eee;
+   .icon{
+     width: 25px;
+     height: 25px;
+   }
+ }
+ }
 </style>
