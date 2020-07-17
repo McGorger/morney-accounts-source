@@ -1,10 +1,10 @@
 <template>
   <ul class="tags">
-    <li v-for="(item,index) in Taglist " :key="index" @click="selected(item)" class="tags-item">
+    <li v-for="(item,index) in tagList " :key="index" @click="selected(item)" class="tags-item">
       <div :class="{select:item === selectedTag}" class="tags-item-icon">
-        <Icon :name="item.value" />
+        <Icon :name="item.currentTag" />
       </div>
-      <span>{{ item.text }}</span>
+      <span>{{ item.tagName }}</span>
     </li>
     <router-link  :to="{name:'editTag',params:{
         type:currentTag
@@ -30,9 +30,13 @@ export default class Tags extends Vue {
     { text: "衣服", value: "clothes" },
     { text: "酒水", value: "wine" }
   ];
+  get tagList() {
+    return this.$store.state.tagList[this.currentTag];
+  }
   selectedTag:DataSourceItem =  this.Taglist[0];
-  mounted(){
-    this.$emit("update:value", this.selectedTag);
+  created() {
+     this.$store.commit("fetchTags");
+     this.$emit("update:value", this.selectedTag);
   }
   selected(item: DataSourceItem) {
     this.selectedTag = item;

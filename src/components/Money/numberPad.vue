@@ -181,7 +181,7 @@ export default class NumberPad extends Vue {
       } else if (this.output.indexOf("-") >= 0) {
         let newOutput = this.output.split("-");
         if (newOutput.length === 3) {
-          alert(`${this.type}不能为负数`);
+          alert(`${this.type ==='-'?'支出':'收入'}不能为负数`);
           this.output = "0";
           return;
         }
@@ -189,7 +189,7 @@ export default class NumberPad extends Vue {
           2
         );
         if (+number < 0) {
-          alert(`${this.type}不能为负数`);
+          alert(`${this.type ==='-'?'支出':'收入'}不能为负数`);
           this.output = "0";
           return;
         }

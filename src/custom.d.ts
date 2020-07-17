@@ -10,8 +10,8 @@ type RootState = {
     tagList: {"+":Tag[],"-":Tag[]};
   }
 type Tag = {
-    id: string;
-    text: string;
-    value:string;
+    tagName: string;
+    currentTag:string;
 }
 type DataSourceItem = { text: string; value: string }
+type newTag = {  name:string,item:string[]}
