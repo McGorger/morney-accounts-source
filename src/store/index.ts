@@ -11,6 +11,9 @@ Vue.use(Vuex)
     tagList: {"+":[],"-":[]},
   } as RootState ,
   mutations: {
+    fetchRecords(state) {
+      state.recordList = JSON.parse(window.localStorage.getItem('recordList') || '[]') as RecordItem[]
+    },
     createRecord(state, record: RecordItem) {
       const record2: RecordItem = clone(record);
       record2.createdAt = record2.createdAt || new Date().toISOString() ;

@@ -1,8 +1,8 @@
 <template>
   <ol class="statistic">
-    <li v-for="item in 3" :key="item">
+    <li v-for="item in recordList" :key="item.tags.tagName">
       <div @click="active(item)" class="list">
-        <div class="time">7月8日 周三</div>
+       <div class="time">7月8日 周三</div>
         <div class="total">
           <div class="income">
             <span>收入</span>
@@ -18,26 +18,25 @@
       </div>
 
       <div v-if="actived.indexOf(item)>=0" class="detail">
-        <div>
+     
           <router-link
             :to="{name:'detailEdit',params:{
-           id:1
+           record:item.tags.tagName
          }}"
             class="detailWrapper"
           >
-            <div>读书</div>
+            <div>11</div>
             <div>21312</div>
           </router-link>
           <router-link
             :to="{name:'detailEdit',params:{
-           id:1
+           record:item.tags.tagName
          }}"
             class="detailWrapper"
           >
             <div>读书</div>
             <div class="number">21312</div>
           </router-link>
-        </div>
       </div>
     </li>
   </ol>
@@ -59,6 +58,16 @@ export default class Statistics extends Vue {
     } else {
       this.actived.push(item);
     }
+  }
+   get recordList() {
+    return (this.$store.state as RootState).recordList;
+  }
+    get groupList() {
+      const { recordList } = this;
+       return [];
+    }
+   beforeCreate() {
+    this.$store.commit("fetchRecords");
   }
 }
 </script>

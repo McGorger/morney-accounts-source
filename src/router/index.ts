@@ -24,7 +24,7 @@ Vue.use(VueRouter)
     component: Chart
   },
     {
-      path: '/details/edit/:id',
+      path: '/details/edit/:record',
       name:'detailEdit',
       component:Edit
     },
