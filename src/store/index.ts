@@ -13,7 +13,7 @@ Vue.use(Vuex)
   mutations: {
     createRecord(state, record: RecordItem) {
       const record2: RecordItem = clone(record);
-      record2.createdAt = new Date().toISOString() ;
+      record2.createdAt = record2.createdAt || new Date().toISOString() ;
       state.recordList.push(record2);
       store.commit('saveRecords');
     },
@@ -34,7 +34,7 @@ Vue.use(Vuex)
       state.tagList[type].push({tagName:Tag.tagName,currentTag:Tag.currentTag });
       store.commit('saveTags');
       window.alert('添加成功');
-      router.back();
+      router.push('/Money')
       return 'success';
      }
     },

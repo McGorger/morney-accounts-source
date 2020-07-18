@@ -1,7 +1,7 @@
 <template>
   <ul class="tags">
-    <li v-for="(item,index) in tagList " :key="index" @click="selected(item)" class="tags-item">
-      <div :class="{select:item === selectedTag}" class="tags-item-icon">
+    <li v-for="(item,index) in Taglist " :key="index" @click="selected(item)" class="tags-item">
+      <div :class="{select:item.tagName === selectedTag}" class="tags-item-icon">
         <Icon :name="item.currentTag" />
       </div>
       <span>{{ item.tagName }}</span>
@@ -24,23 +24,19 @@ import router from "../../router/index";
 @Component
 export default class Tags extends Vue {
    @Prop({required:true,type:String}) 
-     currentTag!: string;
-  Taglist: DataSourceItem[] = [
-    { text: "饭卡", value: "rice" },
-    { text: "衣服", value: "clothes" },
-    { text: "酒水", value: "wine" }
-  ];
-  get tagList() {
-    return this.$store.state.tagList[this.currentTag];
-  }
-  selectedTag:DataSourceItem =  this.Taglist[0];
+     currentTag!: string; 
+  Taglist: Tag[] = [];
+  selectedTag:string = '';
   created() {
      this.$store.commit("fetchTags");
-     this.$emit("update:value", this.selectedTag);
+    const currentag  = this.$store.state.tagList[this.currentTag]
+     this.Taglist = currentag;
+     this.selectedTag = currentag[0].tagName; 
+     this.$emit("update:value", currentag[0]);
   }
-  selected(item: DataSourceItem) {
-    this.selectedTag = item;
-   this.$emit("update:value", this.selectedTag);
+  selected(item: Tag) {
+    this.selectedTag = item.tagName;
+    this.$emit("update:value",item);
   }
 }
 </script>

@@ -31,7 +31,8 @@ export default class Money extends Vue {
     tags: { text: "", value: "" },
     notes: "",
     type: "-",
-    amount: 0
+    amount: 0,
+    createdAt:new Date().toISOString()
   };
   recordtypeList = recordtypeList;
   onUpdateTags(value: DataSourceItem) {

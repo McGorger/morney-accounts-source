@@ -126,7 +126,7 @@ export default class increateTag extends Vue {
       .main-tags {
         display: flex;
         align-items: center;
-        justify-content: start;
+        justify-content: flex-start;
         flex-wrap: wrap;
         > li {
           width: 20%;

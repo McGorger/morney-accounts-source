@@ -1,7 +1,9 @@
 <template>
  <div class="logo">
      <div class="bg-top">
-         <div class="calendar">日历</div>
+         <div class="calendar">
+             <input type="datetime-local" :value="x(isoString)">
+             </div>
          </div>
      <div class="bg-bottom"></div>
      <div class="content">
@@ -17,10 +19,14 @@
 
 <script lang='ts'>
 import Vue from 'vue';
+import dayjs from 'dayjs'
+console.log(dayjs);
 import {Component,Prop} from 'vue-property-decorator';
 @Component
  export default class Logo extends Vue {
+ x(isoString:string){
 
+}
  }
 </script>
 
@@ -38,6 +44,9 @@ import {Component,Prop} from 'vue-property-decorator';
         flex:1.5;
         border-bottom-left-radius: 25px;
         border-bottom-right-radius:25px;
+        .calendar{
+            text-align: center;
+        }
     } 
     .bg-bottom{
         flex:1
