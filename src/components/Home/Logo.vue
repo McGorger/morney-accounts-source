@@ -102,7 +102,7 @@ export default class Logo extends Vue {
  frontClick(){
    const dayFront =  dayjs(this.isoString);
    const now = dayjs();
-   this.isoString=now.subtract(++this.i, "month").format("YYYY-MM-DD")
+   this.isoString=now.subtract(++this.i, "month").format("YYYY-MM-DD");
 }
  afterClick(){
    const dayFront =  dayjs(this.isoString);

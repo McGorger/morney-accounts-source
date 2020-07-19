@@ -22,7 +22,7 @@
           v-for=" (item,index) in  group.items"
           :key="index"
           :to="{name:'detailEdit',params:{
-           record:item.id
+           id:item.id
          }}"
           class="detailWrapper"
         >
@@ -52,7 +52,6 @@ export default class Statistics extends Vue {
    actived: String[]=[];
    created(){
    this.actived = JSON.parse(window.localStorage.getItem('actived') || '[]');
-   console.log(this.actived);
    }
    beforeDestroy(){
      console.log('组件消失');
@@ -89,7 +88,6 @@ export default class Statistics extends Vue {
         result.push({title: dayjs(current.createdAt).format("YYYY-MM-DD"),items: [current]});
       }
     }
-    console.log(result)
 
     result.map(group=>{
       group.incomeTotal = group.items.filter(item=>item.type==="+").reduce((sum,item)=>{
@@ -106,7 +104,6 @@ export default class Statistics extends Vue {
          return sum+ item.payTotal!;
        },0)
     this.$store.commit('setTotal',{totalIncome,paytotal})
-   console.log(result)
     return result;
   }
   beforeCreate() {

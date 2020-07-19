@@ -9,11 +9,16 @@ Vue.use(Vuex)
   state: {
     recordList: [],
     tagList: {"+":[],"-":[]},
-    total:{totalIncome:0,paytotal:0}
+    total:{totalIncome:0,paytotal:0},
+    currentRecord:undefined
   } as RootState ,
   mutations: {
     setTotal(state,value){
       state.total = value;
+    },
+    setCurrentRecords(state,id){
+      console.log(id)
+      state.currentRecord = state.recordList.filter(t => t.id === id)[0];
     },
     fetchRecords(state) {
       state.recordList = JSON.parse(window.localStorage.getItem('recordList') || '[]') as RecordItem[]

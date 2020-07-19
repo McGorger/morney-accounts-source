@@ -26,14 +26,15 @@ export default class Tags extends Vue {
    @Prop({required:true,type:String}) 
      currentTag!: string; 
   get Taglist(){
+    const currentag  = this.$store.state.tagList[this.currentTag]
+     this.selectedTag = currentag[0].tagName; 
+     this.$emit("update:value", currentag[0]);
     return this.$store.state.tagList[this.currentTag]
   }
   selectedTag:string = '';
   created() {
      this.$store.commit("fetchTags");
-     const currentag  = this.$store.state.tagList[this.currentTag]
-     this.selectedTag = currentag[0].tagName; 
-     this.$emit("update:value", currentag[0]);
+     
   }
   selected(item: Tag) {
     this.selectedTag = item.tagName;

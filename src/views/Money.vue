@@ -39,7 +39,9 @@ export default class Money extends Vue {
     this.record.tags = value;
   }
   saveRecord(){
+    
       this.$store.commit("createRecord", this.record);
+      this.record.notes="";
   }
 }
 </script>
