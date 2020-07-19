@@ -53,7 +53,13 @@ Vue.use(Vuex)
     },
     saveTags(state){
       window.localStorage.setItem('tagList', JSON.stringify(state.tagList))
-    }
+    },
+    updateRecord(state,payload:RecordItem){
+      const{ tags,id,amount,createdAt,notes} = payload;
+      const idList = state.recordList.map(item => item.id)
+      const record = state.recordList.filter(item => item.id === id)[0];
+              store.commit('saveRecords');
+  },
   },
 })
 export default store

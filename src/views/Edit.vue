@@ -20,7 +20,7 @@
       <li>
         <label>
           <span class="name">金额</span>
-          <input type="text" :value="record.amount" />
+          <input @input="changeAmount" type="number" :value="record.amount" />
         </label>
       </li>
       <li class="date">
@@ -48,7 +48,7 @@
       <li>
         <label>
           <span class="name">备注</span>
-          <input type="text" :value="record.notes" />
+          <input @input="changeNote" type="text" :value="record.notes" />
         </label>
       </li>
     </ul>
@@ -77,10 +77,12 @@ export default class Edit extends Vue {
     this.record = this.$store.state.currentRecord;
     console.log(this.$store.state.currentRecord);
   }
-  //  get currentRecord(){
-
-  //       return this.$store.state.currentRecord;
-  //   }
+  changeAmount(e:any){
+    this.record.amount = e.target.value; 
+  }
+ changeNote(e:any){
+   this.record.notes = e.target.value; 
+ }
   currentAt(iso: string) {
     this.isoString = dayjs(iso).format("YYYY-MM-DDTmm:ss");
 
@@ -125,7 +127,8 @@ export default class Edit extends Vue {
     }
   }
   changeOk(){
-   console.log(this.record);
+    this.$store.commit('updateRecord',this.record)
+   this.$router.push("/home");
   }
 }
 </script>
