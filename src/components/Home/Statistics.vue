@@ -22,7 +22,7 @@
           v-for=" (item,index) in  group.items"
           :key="index"
           :to="{name:'detailEdit',params:{
-           record:item.tags.tagName
+           record:item.id
          }}"
           class="detailWrapper"
         >

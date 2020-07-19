@@ -4,6 +4,7 @@ type RecordItem = {
     type: string;
     amount: number;
     createdAt?: string;
+    id?:string
 };
 type RootState = {
     recordList: RecordItem[];

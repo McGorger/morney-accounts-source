@@ -21,6 +21,7 @@ Vue.use(Vuex)
     createRecord(state, record: RecordItem) {
       const record2: RecordItem = clone(record);
       record2.createdAt = record2.createdAt || new Date().toISOString() ;
+      record2.id = createId().toString();
       state.recordList.push(record2);
       store.commit('saveRecords');
     },
@@ -37,7 +38,7 @@ Vue.use(Vuex)
         window.alert('标签名重复了');
         return 'duplicated';
      }else{
-      // const id = createId().toString();
+     
       state.tagList[type].push({tagName:Tag.tagName,currentTag:Tag.currentTag });
       store.commit('saveTags');
       window.alert('添加成功');
