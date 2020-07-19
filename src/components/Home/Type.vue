@@ -7,7 +7,6 @@
    <div class="income">
        <div>收入</div>
        <div class="total">{{ this.$store.state.total.paytotal }}</div>
-
     </div>  
   </div>  
 </template>

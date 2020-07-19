@@ -1,15 +1,22 @@
 <template>
   <div class="logo">
     <div class="bg-top">
-      <div class="calendar">
-        <div class="front">
+      <div
+      
+       class="calendar">
+        <div 
+        @click="frontClick"
+        class="front">
           <span></span>
         </div>
-        <div class="input">
+        <div
+         class="input">
            <input type="date" :value="x(isoString)">年 
             <input type="date" :value="x(isoString)" />月
         </div>
-        <div class="after">
+        <div
+        @click="afterClick"
+        class="after">
           <span></span>
         </div>
       </div>
@@ -87,9 +94,21 @@ import { Component, Prop } from "vue-property-decorator";
 @Component
 export default class Logo extends Vue {
   isoString: string = new Date().toISOString();
+  i:number=0;
   x(iso: string) {
-    return dayjs(iso).format("YYYY-MM-DD");
+    this.isoString =  dayjs(iso).format("YYYY-MM-DD");
+    return this.isoString;
   }
+ frontClick(){
+   const dayFront =  dayjs(this.isoString);
+   const now = dayjs();
+   this.isoString=now.subtract(++this.i, "month").format("YYYY-MM-DD")
+}
+ afterClick(){
+   const dayFront =  dayjs(this.isoString);
+   const now = dayjs();
+   this.isoString=now.subtract(--this.i, "month").format("YYYY-MM-DD")
+}
 }
 </script>
 

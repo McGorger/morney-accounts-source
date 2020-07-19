@@ -4,11 +4,11 @@
       <div @click="active(group.title)" class="list">
         <div class="time">{{ beautify(group.title) }}</div>
         <div class="total">
-          <div class="income">
+          <div v-if="!(group.incomeTotal === 0)" class="income">
             <span>收入</span>
             <span class="number">{{ group.incomeTotal }}</span>
           </div>
-          <div class="pay">
+          <div v-if="!(group.payTotal === 0)" class="pay">
             <span>支出</span>
             <span class="number">{{ group.payTotal }}</span>
           </div>
