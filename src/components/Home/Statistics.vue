@@ -49,7 +49,15 @@ import dayjs from "dayjs";
 import clone from "@/lib/clone";
 @Component
 export default class Statistics extends Vue {
-  actived: String[] = [];
+   actived: String[]=[];
+   created(){
+   this.actived = JSON.parse(window.localStorage.getItem('actived') || '[]');
+   console.log(this.actived);
+   }
+   beforeDestroy(){
+     console.log('组件消失');
+     window.localStorage.setItem('actived', JSON.stringify(this.actived))
+   }
   active(item: String) {
     if (this.actived.indexOf(item) >= 0) {
       this.actived.forEach((i, index) => {
@@ -93,7 +101,6 @@ export default class Statistics extends Vue {
         });
       }
     }
-    console.log(result);
     return result;
   }
   beforeCreate() {

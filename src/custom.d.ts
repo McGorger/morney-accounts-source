@@ -8,6 +8,7 @@ type RecordItem = {
 type RootState = {
     recordList: RecordItem[];
     tagList: {"+":Tag[],"-":Tag[]};
+    acticved:string[];
   }
 type Tag = {
     tagName: string;

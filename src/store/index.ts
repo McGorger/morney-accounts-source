@@ -9,6 +9,7 @@ Vue.use(Vuex)
   state: {
     recordList: [],
     tagList: {"+":[],"-":[]},
+    acticved:[]
   } as RootState ,
   mutations: {
     fetchRecords(state) {

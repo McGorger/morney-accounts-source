@@ -2,7 +2,7 @@
  <Layout>
   <Logo/>
   <Type/>
-  <Statistics/>
+  <Statistics :value.sync="actived" />
 </Layout>
 </template>
 
@@ -20,6 +20,7 @@ import Statistics from '@/components/Home/Statistics.vue';
   }
 })
  export default class Home extends Vue {
+   actived:string[]=[];
  }
 </script>
 
