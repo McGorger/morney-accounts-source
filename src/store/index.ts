@@ -9,9 +9,12 @@ Vue.use(Vuex)
   state: {
     recordList: [],
     tagList: {"+":[],"-":[]},
-    acticved:[]
+    total:{totalIncome:0,paytotal:0}
   } as RootState ,
   mutations: {
+    setTotal(state,value){
+      state.total = value;
+    },
     fetchRecords(state) {
       state.recordList = JSON.parse(window.localStorage.getItem('recordList') || '[]') as RecordItem[]
     },

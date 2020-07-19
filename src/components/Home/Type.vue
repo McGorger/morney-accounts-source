@@ -2,11 +2,11 @@
  <div class="type">
    <div class="pay">
       <div>支出</div>
-      <div class="total">111</div>
+      <div class="total">{{ this.$store.state.total.totalIncome }}</div>
    </div>
    <div class="income">
        <div>收入</div>
-       <div class="total">222</div>
+       <div class="total">{{ this.$store.state.total.paytotal }}</div>
 
     </div>  
   </div>  
@@ -17,19 +17,17 @@ import Vue from 'vue';
 import {Component,Prop} from 'vue-property-decorator';
 @Component
  export default class Type extends Vue {
-
  }
 </script>
 
 <style scoped lang='scss'>
 @import "~@/assets/style/helper.scss";
-
 .type{
   @extend %fixClear;
    @extend %outShadow;
    display: flex;
    .total{
-     font-size: 20px;
+     font-size: 18px;
     }
   >.pay{
     float: right;

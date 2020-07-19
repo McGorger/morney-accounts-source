@@ -6,11 +6,11 @@
         <div class="total">
           <div class="income">
             <span>收入</span>
-            <span class="number"></span>
+            <span class="number">{{ group.incomeTotal }}</span>
           </div>
           <div class="pay">
             <span>支出</span>
-            <span class="number">222</span>
+            <span class="number">{{ group.payTotal }}</span>
           </div>
 
           <div class="triangle" :class="{'selected':actived.indexOf(group.title)>=0}"></div>
@@ -72,35 +72,41 @@ export default class Statistics extends Vue {
   get recordList() {
     return (this.$store.state as RootState).recordList;
   }
+
   get groupList() {
     const { recordList } = this;
-    if (recordList.length === 0) {
-      return [];
-    }
+    if (recordList.length === 0) return [];
     type HashTableValue = { title: string; items: RecordItem[] };
-    const newList = clone(recordList).sort(
-      (a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf()
-    );
-
-    const result = [
-      {
-        title: dayjs(newList[0].createdAt).format("YYYY-MM-DD"),
-        items: [newList[0]]
-      }
-    ];
-
+    type result = {title:string,incomeTotal?:number,payTotal?:number,items:RecordItem[]}[];
+    const newList = clone(recordList).sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
+    const result:result = [{title: dayjs(newList[0].createdAt).format("YYYY-MM-DD"),items: [newList[0]]}];
     for (let i = 1; i < newList.length; i++) {
       const current = newList[i];
       const last = result[result.length - 1];
       if (dayjs(last.title).isSame(dayjs(current.createdAt), "day")) {
         last.items.push(current);
       } else {
-        result.push({
-          title: dayjs(current.createdAt).format("YYYY-MM-DD"),
-          items: [current]
-        });
+        result.push({title: dayjs(current.createdAt).format("YYYY-MM-DD"),items: [current]});
       }
     }
+    console.log(result)
+
+    result.map(group=>{
+      group.incomeTotal = group.items.filter(item=>item.type==="+").reduce((sum,item)=>{
+         return sum+item.amount;
+       },0)
+        group.payTotal = group.items.filter(item=>item.type==="-").reduce((sum,item)=>{
+         return sum + item.amount;
+       },0)
+    })
+    const totalIncome =  result.reduce((sum,item)=>{
+         return sum+ item.incomeTotal!;
+       },0)
+       const paytotal =  result.reduce((sum,item)=>{
+         return sum+ item.payTotal!;
+       },0)
+    this.$store.commit('setTotal',{totalIncome,paytotal})
+   console.log(result)
     return result;
   }
   beforeCreate() {

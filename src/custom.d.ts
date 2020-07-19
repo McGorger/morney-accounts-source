@@ -8,7 +8,7 @@ type RecordItem = {
 type RootState = {
     recordList: RecordItem[];
     tagList: {"+":Tag[],"-":Tag[]};
-    acticved:string[];
+    total:{totalIncome:number,paytotal:number}
   }
 type Tag = {
     tagName: string;

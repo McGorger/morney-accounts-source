@@ -2,7 +2,7 @@
  <Layout>
   <Logo/>
   <Type/>
-  <Statistics :value.sync="actived" />
+  <Statistics />
 </Layout>
 </template>
 
