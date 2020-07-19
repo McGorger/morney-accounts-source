@@ -25,12 +25,13 @@ import router from "../../router/index";
 export default class Tags extends Vue {
    @Prop({required:true,type:String}) 
      currentTag!: string; 
-  Taglist: Tag[] = [];
+  get Taglist(){
+    return this.$store.state.tagList[this.currentTag]
+  }
   selectedTag:string = '';
   created() {
      this.$store.commit("fetchTags");
-    const currentag  = this.$store.state.tagList[this.currentTag]
-     this.Taglist = currentag;
+     const currentag  = this.$store.state.tagList[this.currentTag]
      this.selectedTag = currentag[0].tagName; 
      this.$emit("update:value", currentag[0]);
   }

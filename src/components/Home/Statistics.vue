@@ -1,42 +1,42 @@
 <template>
   <ol class="statistic">
-    <li v-for="item in recordList" :key="item.tags.tagName">
-      <div @click="active(item)" class="list">
-       <div class="time">7月8日 周三</div>
+    <li v-for="(group,index) in groupList" :key="index">
+      <div @click="active(group.title)" class="list">
+        <div class="time">{{ beautify(group.title) }}</div>
         <div class="total">
           <div class="income">
             <span>收入</span>
-            <span class="number">333</span>
+            <span class="number"></span>
           </div>
           <div class="pay">
             <span>支出</span>
             <span class="number">222</span>
           </div>
 
-          <div class="triangle" :class="{'selected':actived.indexOf(item)>=0}"></div>
+          <div class="triangle" :class="{'selected':actived.indexOf(group.title)>=0}"></div>
         </div>
       </div>
 
-      <div v-if="actived.indexOf(item)>=0" class="detail">
-     
-          <router-link
-            :to="{name:'detailEdit',params:{
+      <div v-if="actived.indexOf(group.title)>=0" class="detail">
+        <router-link
+          v-for=" (item,index) in  group.items"
+          :key="index"
+          :to="{name:'detailEdit',params:{
            record:item.tags.tagName
          }}"
-            class="detailWrapper"
-          >
-            <div>11</div>
-            <div>21312</div>
-          </router-link>
-          <router-link
-            :to="{name:'detailEdit',params:{
-           record:item.tags.tagName
-         }}"
-            class="detailWrapper"
-          >
-            <div>读书</div>
-            <div class="number">21312</div>
-          </router-link>
+          class="detailWrapper"
+        >
+          <div class="detailTag">
+            <Icon :name="item.tags.currentTag" />
+            <div class="tagName">
+              <span>{{ item.tags.tagName }}</span>
+              <span
+                 
+              >{{ item.notes }}</span>
+            </div>
+          </div>
+          <div :class="{income:item.type==='+'}">{{ item.amount }}</div>
+        </router-link>
       </div>
     </li>
   </ol>
@@ -45,6 +45,8 @@
 <script lang='ts'>
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
+import dayjs from "dayjs";
+import clone from "@/lib/clone";
 @Component
 export default class Statistics extends Vue {
   actived: String[] = [];
@@ -59,15 +61,56 @@ export default class Statistics extends Vue {
       this.actived.push(item);
     }
   }
-   get recordList() {
+  get recordList() {
     return (this.$store.state as RootState).recordList;
   }
-    get groupList() {
-      const { recordList } = this;
-       return [];
+  get groupList() {
+    const { recordList } = this;
+    if (recordList.length === 0) {
+      return [];
     }
-   beforeCreate() {
+    type HashTableValue = { title: string; items: RecordItem[] };
+    const newList = clone(recordList).sort(
+      (a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf()
+    );
+
+    const result = [
+      {
+        title: dayjs(newList[0].createdAt).format("YYYY-MM-DD"),
+        items: [newList[0]]
+      }
+    ];
+
+    for (let i = 1; i < newList.length; i++) {
+      const current = newList[i];
+      const last = result[result.length - 1];
+      if (dayjs(last.title).isSame(dayjs(current.createdAt), "day")) {
+        last.items.push(current);
+      } else {
+        result.push({
+          title: dayjs(current.createdAt).format("YYYY-MM-DD"),
+          items: [current]
+        });
+      }
+    }
+    console.log(result);
+    return result;
+  }
+  beforeCreate() {
     this.$store.commit("fetchRecords");
+  }
+  beautify(string: string) {
+    const day = dayjs(string);
+    const now = dayjs();
+    if (day.isSame(new Date(), "day")) {
+      return "今天";
+    } else if (day.isSame(now.subtract(1, "day"), "day")) {
+      return "昨天";
+    } else if (day.isSame(now, "year")) {
+      return day.format("M月D日");
+    } else {
+      return day.format("YYYY年M月D日");
+    }
   }
 }
 </script>
@@ -129,13 +172,37 @@ export default class Statistics extends Vue {
       }
     }
     > .detail {
-      a {
+      .detailWrapper {
         padding: 5px 0px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         border-bottom: 1px solid #eee;
-        font-size: 15px;
+        font-size: 15px; 
+        .income{
+          color: $font-highlight;
+        }
+        .detailTag{
+           display: flex;
+           align-items: center;
+           .tagName{
+             display: flex;
+             flex-direction: column;
+             span:last-child{
+               font-size: 12px;
+               color: rgb(155, 155, 155);
+             }
+           }
+          .icon {
+          background: grey;
+          margin-right: 5px;
+          border-radius: 50%;
+          padding: 4px;
+          color: #eeeeee;
+          vertical-align: middle;
+        }
+        }
+      
         &:nth-last-child(1) {
           border-bottom: none;
         }

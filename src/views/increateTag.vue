@@ -71,7 +71,6 @@ export default class increateTag extends Vue {
       alert('请输入标签名')
     }else{
       this.$store.commit('createTag',{type:this.type,currentTag:this.currentTag,tagName:this.tagName})
-      this.$router.back();
    }
   }
 }

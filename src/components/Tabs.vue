@@ -34,7 +34,7 @@ export default class Type extends Vue {
      dataSource!: DataSourceItem[]|string;
      @Prop(String) readonly  classPrefix?: string ;
    type: string = "-";
-  select(item:string){
+ select(item:string){
    this.type = item;
    EventBus.$emit('getSelectedStatus',item);
   }

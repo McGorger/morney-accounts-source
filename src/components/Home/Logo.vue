@@ -2,11 +2,13 @@
   <div class="logo">
     <div class="bg-top">
       <div class="calendar">
-        <!-- <input type="date"  :value="x(isoString)" /> -->
         <div class="front">
           <span></span>
         </div>
-        <input type="month" :value="x(isoString)" />
+        <div class="input">
+           <input type="date" :value="x(isoString)">年 
+            <input type="date" :value="x(isoString)" />月
+        </div>
         <div class="after">
           <span></span>
         </div>
@@ -86,7 +88,7 @@ import { Component, Prop } from "vue-property-decorator";
 export default class Logo extends Vue {
   isoString: string = new Date().toISOString();
   x(iso: string) {
-    return dayjs(iso).format("YYYY-MM");
+    return dayjs(iso).format("YYYY-MM-DD");
   }
 }
 </script>
@@ -110,7 +112,7 @@ export default class Logo extends Vue {
       text-align: center;
       display: flex;
       justify-content: center;
-      position: relative;
+    
       .front {
         width: 0;
         height: 0;
@@ -152,11 +154,14 @@ export default class Logo extends Vue {
         top: -10px;
       }
       }
-      input[type="month"] {
-        margin: 0 10px;
-        text-align: center;
+      .input{
         border: 1px solid gray;
         border-radius: 5px;
+        margin:0 10px;
+        input[type="date"] {
+       
+        text-align: center;
+        
         font-size: 18px;
         &::-webkit-calendar-picker-indicator {
           display: none;
@@ -164,11 +169,27 @@ export default class Logo extends Vue {
         &::-webkit-clear-button {
           display: none;
         }
-
+        &::-webkit-datetime-edit-text {
+             display: none;
+            }
         &::-webkit-datetime-edit-day-field {
           display: none;
         }
-      }
+
+         &:first-child{
+           width: 50px;
+         }
+        &:last-child{
+           width: 28px;
+         }
+          &:first-child::-webkit-datetime-edit-month-field{
+          display: none;
+        }
+        &:last-child::-webkit-datetime-edit-year-field{
+          display: none;
+        }
+      }}
+      
     }
   }
   .bg-bottom {

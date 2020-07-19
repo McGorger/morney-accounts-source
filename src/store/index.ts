@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import clone from '../lib/clone'
 import router from '@/router/index.ts';
-// import createId from '../lib/idCreator';
+import createId from '../lib/idCreator';
 Vue.use(Vuex)
 
  const store =  new Vuex.Store({
