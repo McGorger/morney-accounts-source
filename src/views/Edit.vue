@@ -6,7 +6,7 @@
       </div>
       <div class="title">
         <div class="iconWrapper">
-          <Icon name="money" />
+          <Icon :name="record.tags.currentTag" />
         </div>
         <div>{{ record.tags.tagName }}</div>
       </div>
@@ -75,36 +75,28 @@ export default class Edit extends Vue {
     this.$store.commit("fetchRecords");
     this.$store.commit("setCurrentRecords", id);
     this.record = this.$store.state.currentRecord;
-    console.log(this.$store.state.currentRecord);
   }
   changeAmount(e:any){
-    this.record.amount = e.target.value; 
+    this.record.amount = parseFloat(e.target.value); 
   }
  changeNote(e:any){
    this.record.notes = e.target.value; 
  }
   currentAt(iso: string) {
-    this.isoString = dayjs(iso).format("YYYY-MM-DDTmm:ss");
-
+    this.isoString = dayjs(iso).format("YYYY-MM-DDThh:ss");
+    console.log(this.isoString);
     return this.isoString;
   }
   changeValueYear(value: string, e: any) {
-    console.log(e.target.value);
-
     if (dayjs(e.target.value).valueOf() - dayjs(value).valueOf() > 0) {
-      console.log("成功");
-      this.record.createdAt = dayjs(value)
-        .add(1, "year")
-        .toISOString();
+      this.record.createdAt = dayjs(value).add(1, "year").toISOString();
     } else {
-      this.record.createdAt = dayjs(value)
-        .subtract(1, "year")
-        .toISOString();
+      this.record.createdAt = dayjs(value).subtract(1, "year").toISOString();
     }
   }
   changeValueMonth(value: string, e: any) {
     if (dayjs(e.target.value).valueOf() - dayjs(value).valueOf() > 0) {
-      console.log("成功");
+     
       this.record.createdAt = dayjs(value)
         .add(1, "month")
         .toISOString();
@@ -116,7 +108,7 @@ export default class Edit extends Vue {
   }
   changeValueday(value: string, e: any) {
     if (dayjs(e.target.value).valueOf() - dayjs(value).valueOf() > 0) {
-      console.log("成功");
+  
       this.record.createdAt = dayjs(value)
         .add(1, "day")
         .toISOString();

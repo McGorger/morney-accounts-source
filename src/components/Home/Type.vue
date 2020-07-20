@@ -2,11 +2,11 @@
  <div class="type">
    <div class="pay">
       <div>支出</div>
-      <div class="total">{{ this.$store.state.total.totalIncome }}</div>
+      <div class="total">{{ this.$store.state.total.paytotal }}</div>
    </div>
    <div class="income">
        <div>收入</div>
-       <div class="total">{{ this.$store.state.total.paytotal }}</div>
+       <div class="total">{{ this.$store.state.total.totalIncome }}</div>
     </div>  
   </div>  
 </template>
@@ -14,8 +14,16 @@
 <script lang='ts'>
 import Vue from 'vue';
 import {Component,Prop} from 'vue-property-decorator';
+import { EventBus } from "@/event-bus.ts";
 @Component
  export default class Type extends Vue {
+   recordList: RecordItem[] = [];
+  //  mounted(){
+  //      EventBus.$on("getTotal", (res: RecordItem[] ) => {
+  //          this.recordList = res;
+  //          console.log(this.recordList)
+  //   });
+  //  }
  }
 </script>
 

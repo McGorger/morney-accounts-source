@@ -20,7 +20,6 @@ import Statistics from '@/components/Home/Statistics.vue';
   }
 })
  export default class Home extends Vue {
-   actived:string[]=[];
  }
 </script>
 

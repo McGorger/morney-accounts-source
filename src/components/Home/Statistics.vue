@@ -1,5 +1,5 @@
 <template>
-  <ol class="statistic">
+  <ol v-if="recordList.length" class="statistic">
     <li v-for="(group,index) in groupList" :key="index">
       <div @click="active(group.title)" class="list">
         <div class="time">{{ beautify(group.title) }}</div>
@@ -30,9 +30,7 @@
             <Icon :name="item.tags.currentTag" />
             <div class="tagName">
               <span>{{ item.tags.tagName }}</span>
-              <span
-                 
-              >{{ item.notes }}</span>
+              <span>{{ item.notes }}</span>
             </div>
           </div>
           <div :class="{income:item.type==='+'}">{{ item.amount }}</div>
@@ -40,23 +38,40 @@
       </div>
     </li>
   </ol>
+  <div class="notingRecord" v-else>
+    <Icon name="noting"/>
+    <span>暂无账目记录</span> 
+  </div>
 </template>
 
 <script lang='ts'>
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import dayjs from "dayjs";
 import clone from "@/lib/clone";
+import { EventBus } from "@/event-bus.ts";
 @Component
 export default class Statistics extends Vue {
-   actived: String[]=[];
-   created(){
-   this.actived = JSON.parse(window.localStorage.getItem('actived') || '[]');
-   }
-   beforeDestroy(){
-     console.log('组件消失');
-     window.localStorage.setItem('actived', JSON.stringify(this.actived))
-   }
+  actived: String[] = [];
+  recordList: RecordItem[] = [];
+  created() {
+    this.actived = JSON.parse(window.localStorage.getItem("actived") || "[]");
+      EventBus.$on("getIsoString", (res: string) => {
+      this.recordList = (this.$store.state as RootState).recordList.filter(
+        item => dayjs(item.createdAt).format("YYYY-MM") === res
+      );
+    });
+  }
+  @Watch('recordList')
+  setTotal(){
+    if(this.recordList.length ===0){
+      this.$store.commit('setTotal ',{totalIncome:0,paytotal:0});
+    }
+  }
+  beforeDestroy() {
+    console.log("组件消失");
+    window.localStorage.setItem("actived", JSON.stringify(this.actived));
+  }
   active(item: String) {
     if (this.actived.indexOf(item) >= 0) {
       this.actived.forEach((i, index) => {
@@ -68,42 +83,58 @@ export default class Statistics extends Vue {
       this.actived.push(item);
     }
   }
-  get recordList() {
-    return (this.$store.state as RootState).recordList;
-  }
 
   get groupList() {
     const { recordList } = this;
     if (recordList.length === 0) return [];
     type HashTableValue = { title: string; items: RecordItem[] };
-    type result = {title:string,incomeTotal?:number,payTotal?:number,items:RecordItem[]}[];
-    const newList = clone(recordList).sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
-    const result:result = [{title: dayjs(newList[0].createdAt).format("YYYY-MM-DD"),items: [newList[0]]}];
+    type result = {
+      title: string;
+      incomeTotal?: number;
+      payTotal?: number;
+      items: RecordItem[];
+    }[];
+    const newList = clone(recordList).sort(
+      (a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf()
+    );
+    const result: result = [
+      {
+        title: dayjs(newList[0].createdAt).format("YYYY-MM-DD"),
+        items: [newList[0]]
+      }
+    ];
     for (let i = 1; i < newList.length; i++) {
       const current = newList[i];
       const last = result[result.length - 1];
       if (dayjs(last.title).isSame(dayjs(current.createdAt), "day")) {
         last.items.push(current);
       } else {
-        result.push({title: dayjs(current.createdAt).format("YYYY-MM-DD"),items: [current]});
+        result.push({
+          title: dayjs(current.createdAt).format("YYYY-MM-DD"),
+          items: [current]
+        });
       }
     }
 
-    result.map(group=>{
-      group.incomeTotal = group.items.filter(item=>item.type==="+").reduce((sum,item)=>{
-         return sum+item.amount;
-       },0)
-        group.payTotal = group.items.filter(item=>item.type==="-").reduce((sum,item)=>{
-         return sum + item.amount;
-       },0)
-    })
-    const totalIncome =  result.reduce((sum,item)=>{
-         return sum+ item.incomeTotal!;
-       },0)
-       const paytotal =  result.reduce((sum,item)=>{
-         return sum+ item.payTotal!;
-       },0)
-    this.$store.commit('setTotal',{totalIncome,paytotal})
+    result.map(group => {
+      group.incomeTotal = group.items
+        .filter(item => item.type === "+")
+        .reduce((sum, item) => {
+          return sum + item.amount;
+        }, 0);
+      group.payTotal = group.items
+        .filter(item => item.type === "-")
+        .reduce((sum, item) => {
+          return sum + item.amount;
+        }, 0);
+    });
+    const totalIncome = result.reduce((sum, item) => {
+      return sum + item.incomeTotal!;
+    }, 0);
+    const paytotal = result.reduce((sum, item) => {
+      return sum + item.payTotal!;
+    }, 0);
+    this.$store.commit("setTotal", { totalIncome, paytotal });
     return result;
   }
   beforeCreate() {
@@ -188,36 +219,51 @@ export default class Statistics extends Vue {
         align-items: center;
         justify-content: space-between;
         border-bottom: 1px solid #eee;
-        font-size: 15px; 
-        .income{
+        font-size: 15px;
+        .income {
           color: $font-highlight;
         }
-        .detailTag{
-           display: flex;
-           align-items: center;
-           .tagName{
-             display: flex;
-             flex-direction: column;
-             span:last-child{
-               font-size: 12px;
-               color: rgb(155, 155, 155);
-             }
-           }
+        .detailTag {
+          display: flex;
+          align-items: center;
+          .tagName {
+            display: flex;
+            flex-direction: column;
+            span:last-child {
+              font-size: 12px;
+              color: rgb(155, 155, 155);
+            }
+          }
           .icon {
-          background: grey;
-          margin-right: 5px;
-          border-radius: 50%;
-          padding: 4px;
-          color: #eeeeee;
-          vertical-align: middle;
+            background: grey;
+            margin-right: 5px;
+            border-radius: 50%;
+            padding: 4px;
+            color: #eeeeee;
+            vertical-align: middle;
+          }
         }
-        }
-      
+
         &:nth-last-child(1) {
           border-bottom: none;
         }
       }
     }
   }
+}
+.notingRecord{
+  padding:30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  .icon{
+    width: 100px;
+    height: 100px
+  }
+  span{
+    margin-top: 20px;
+  }
+
 }
 </style>

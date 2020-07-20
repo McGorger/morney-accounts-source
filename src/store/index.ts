@@ -17,7 +17,6 @@ Vue.use(Vuex)
       state.total = value;
     },
     setCurrentRecords(state,id){
-      console.log(id)
       state.currentRecord = state.recordList.filter(t => t.id === id)[0];
     },
     fetchRecords(state) {

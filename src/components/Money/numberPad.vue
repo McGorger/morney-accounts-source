@@ -59,14 +59,11 @@ export default class NumberPad extends Vue {
   dataSource!: DataSourceItem[];
   @Prop(String) readonly  type!: string ;
   select(item: string) {
-     this.$emit('update:type',item);
+     this.$emit ('update:type',item);
     EventBus.$emit("getSelectedStatus", item);
   }
   mounted() {
-    this.getSelectedStatus();
-  }
-  getSelectedStatus() {
-    EventBus.$on("getSelectedStatus", (res: string) => {
+   EventBus.$on("getSelectedStatus", (res: string) => {
        this.$emit('update:type',res);
     });
   }

@@ -2,7 +2,6 @@
   <div class="logo">
     <div class="bg-top">
       <div
-      
        class="calendar">
         <div 
         @click="frontClick"
@@ -89,8 +88,8 @@
 <script lang='ts'>
 import Vue from "vue";
 import dayjs from "dayjs";
-
-import { Component, Prop } from "vue-property-decorator";
+import { EventBus } from "@/event-bus.ts";
+import { Component, Prop, Watch } from "vue-property-decorator";
 @Component
 export default class Logo extends Vue {
   isoString: string = new Date().toISOString();
@@ -99,16 +98,22 @@ export default class Logo extends Vue {
     this.isoString =  dayjs(iso).format("YYYY-MM-DD");
     return this.isoString;
   }
+  @Watch('isoString')
+  isoStringChage(){
+     EventBus.$emit("getIsoString", dayjs(this.isoString).format("YYYY-MM")); 
+  }
  frontClick(){
    const dayFront =  dayjs(this.isoString);
    const now = dayjs();
    this.isoString=now.subtract(++this.i, "month").format("YYYY-MM-DD");
-}
+ }
  afterClick(){
    const dayFront =  dayjs(this.isoString);
    const now = dayjs();
    this.isoString=now.subtract(--this.i, "month").format("YYYY-MM-DD")
+
 }
+
 }
 </script>
 
