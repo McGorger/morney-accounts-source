@@ -64,8 +64,9 @@ export default class Statistics extends Vue {
   }
   @Watch('recordList')
   setTotal(){
-    if(this.recordList.length ===0){
-      this.$store.commit('setTotal ',{totalIncome:0,paytotal:0});
+    if(this.recordList.length === 0){
+      console.log(113)
+      this.$store.commit("setTotal",{totalIncome:0,paytotal:0});
     }
   }
   beforeDestroy() {

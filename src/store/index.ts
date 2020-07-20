@@ -59,6 +59,25 @@ Vue.use(Vuex)
       const record = state.recordList.filter(item => item.id === id)[0];
               store.commit('saveRecords');
   },
+  removeRecord(state,id:string){
+    let index = -1
+    for (let i = 0; i < state.recordList.length; i++) {
+        if (state.recordList[i].id ===id ) {
+            index = i
+            break;
+        }
+    }
+   
+    if(index >= 0){
+      state.recordList.splice(index, 1);
+
+      store.commit('saveRecords');
+       router.back();
+    }else{
+      window.alert('删除失败');
+  }
+  
+  }
   },
 })
 export default store

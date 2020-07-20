@@ -18,12 +18,6 @@ import { EventBus } from "@/event-bus.ts";
 @Component
  export default class Type extends Vue {
    recordList: RecordItem[] = [];
-  //  mounted(){
-  //      EventBus.$on("getTotal", (res: RecordItem[] ) => {
-  //          this.recordList = res;
-  //          console.log(this.recordList)
-  //   });
-  //  }
  }
 </script>
 

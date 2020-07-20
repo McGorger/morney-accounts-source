@@ -1,8 +1,11 @@
 <template>
   <Layout show>
-    <Tabs classPrefix="type" :data-source="recordtypeList" />
+    <Tabs classPrefix="type" :data-source="recordtypeList" >
+      <Icon slot="left" name="left" />    
+    </Tabs>
     <div class="tag">
       <Tags :currentTag="record.type" @update:value="onUpdateTags" />
+          
     </div>
     <NumberPad
       :data-source="recordtypeList"

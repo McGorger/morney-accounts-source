@@ -54,7 +54,7 @@
     </ul>
     <div class="footer">
       <button @click="changeOk">编辑完成</button>
-      <button>删除</button>
+      <button @click="deleteRecord">删除</button>
     </div>
   </Layout>
 </template>
@@ -121,6 +121,10 @@ export default class Edit extends Vue {
   changeOk(){
     this.$store.commit('updateRecord',this.record)
    this.$router.push("/home");
+  }
+  deleteRecord(){
+    console.log(this.record.id)
+     this.$store.commit('removeRecord',this.record.id);
   }
 }
 </script>

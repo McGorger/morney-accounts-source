@@ -1,9 +1,8 @@
 <template>
   <div :class="{[classPrefix+'-Tab']:classPrefix}" class="Tab">
-    <div
-    @click="goback"
+    <div @click="goback"
      class="left">
-      <Icon name="left" />
+      <slot name="left"></slot>
     </div>
     <div 
     class="tabs">
@@ -39,16 +38,14 @@ export default class Type extends Vue {
    EventBus.$emit('getSelectedStatus',item);
   }
    mounted(){
-        this.getSelectedStatus();
+       EventBus.$on('getSelectedStatus',(res:string)=>{
+        this.type =  res;
+    })
     }
     goback(){
       this.$router.back();
     }
-  getSelectedStatus(){
-    EventBus.$on('getSelectedStatus',(res:string)=>{
-        this.type =  res;
-    })
-  }
+
 }
 </script>
 
