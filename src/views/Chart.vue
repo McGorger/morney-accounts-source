@@ -5,14 +5,14 @@
     <ul class="tab-bar">
       <li
       v-for=" item in dataTime"
-      :key="item"
+      :key="item.value"
       :class="{selected:item === select}"
       @click="active(item)"
-      >{{ item }}</li>
+      >{{ item.text }}</li>
     </ul>
     </div>
-  <StatChart />
- <Ranking/>
+  <StatChart :dateType="select" :type="type" :dataSource="this.$store.state.recordList"/>
+ <Ranking :dateType="select" :type="type" :dataSource="this.$store.state.recordList" />
   </Layout>
 </template>
 
@@ -33,12 +33,13 @@ import { EventBus } from "@/event-bus.ts";
 export default class Chart extends Vue {
   recordtypeList = recordtypeList;
   dataTime = dataTime;
-  select:string = dataTime[0];
+  select:DataSourceItem = dataTime[0];
   type:string = '-'
-  active(item:string){
+  active(item:DataSourceItem){
    this.select =  item;
   }
-  mounted(){
+   created(){
+       this.$store.commit('fetchRecords');
        EventBus.$on('getSelectedStatus',(res:string)=>{
         this.type =  res;
     })

@@ -1,6 +1,7 @@
 <template>
   <div class="tags">
     <Tabs classPrefix="increateTag" data-source="添加类别">
+       <Icon slot="left" name="left" />    
       <Icon
       @click="ok"
        name="success" />

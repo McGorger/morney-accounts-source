@@ -1,3 +1,3 @@
 export default [
-    '周','月','年'
-  ];
+  { value: 'week', text: '周' }, { value: 'month', text: '月' }, { value: 'year', text: '年' }
+];

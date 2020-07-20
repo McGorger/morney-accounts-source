@@ -12,7 +12,7 @@
 <script lang='ts'>
 import Vue from "vue";
 import dayjs from "dayjs";
-import { Component } from "vue-property-decorator";
+import { Component, Prop,Watch } from "vue-property-decorator";
 import ECharts from "@/components/ChartS.vue";
 @Component({
   components: {
@@ -20,30 +20,24 @@ import ECharts from "@/components/ChartS.vue";
   }
 })
 export default class StatChart extends Vue {
-  get x() {
-    return {
-      xAxis: {
-        type: "category",
-        data: ["1", "2", "3", "4", "5", "6", "7 ","8","9","10",
-        "11", "12", "13", "14", "15", "16", "17","18","19","20",
-        "21", "22", "23", "24", "25", "26", "27","28","29","30"]
-      },
-      yAxis: {
-        type: "value"
-      },
-      tooltip: {
-        show: true
-      },
-      series: [
-        {
-          data: [1, 2, 3, 3, 3, 3, 6,6,6,1,
-        1, 2, 3, 3, 3, 3, 6,6,6,1,
-        1, 2, 3, 3, 3, 3, 6,6,6,0,1,11],
-          type: "line"
-        }
-      ]
-    };
+  @Prop() dateType!:DataSourceItem
+  @Prop() type!:string
+  @Prop() dataSource!:RecordItem[]
+  currentDate = new Date().toISOString();
+  recordList:RecordItem[] =[]
+  @Watch('type')
+  @Watch('dateType')
+  a(){
+      this.recordList = this.dataSource.filter(item=>{
+      return item.type === this.type && dayjs(item.createdAt).isSame(dayjs(this.currentDate),this.dateType.value as any)
+     })
   }
+  mounted(){
+   this.recordList =   this.dataSource.filter(item=>{
+      return item.type === this.type && dayjs(item.createdAt).isSame(dayjs(this.currentDate),this.dateType.value as any)
+     })
+  }
+  
 }
 </script>
 
