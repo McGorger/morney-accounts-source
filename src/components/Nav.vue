@@ -7,7 +7,7 @@
       <Icon name="money" />记账
     </router-link>
     <router-link class="item" to="/chart" active-class="selected">
-      <Icon name="chart" />图标
+      <Icon name="chart" />图表
     </router-link>
   </nav>
 </template>

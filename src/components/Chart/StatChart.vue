@@ -5,6 +5,7 @@
     </div>
     <div class="total">总支出: ¥34712.91</div>
     <div class="average">平均值: ¥4958.98</div>
+    <ECharts :options="x" />
   </div>
 </template>
 
@@ -12,8 +13,38 @@
 import Vue from "vue";
 import dayjs from "dayjs";
 import { Component } from "vue-property-decorator";
-@Component
-export default class StatChart extends Vue {}
+import ECharts from "@/components/ChartS.vue";
+@Component({
+  components: {
+    ECharts
+  }
+})
+export default class StatChart extends Vue {
+  get x() {
+    return {
+      xAxis: {
+        type: "category",
+        data: ["1", "2", "3", "4", "5", "6", "7 ","8","9","10",
+        "11", "12", "13", "14", "15", "16", "17","18","19","20",
+        "21", "22", "23", "24", "25", "26", "27","28","29","30"]
+      },
+      yAxis: {
+        type: "value"
+      },
+      tooltip: {
+        show: true
+      },
+      series: [
+        {
+          data: [1, 2, 3, 3, 3, 3, 6,6,6,1,
+        1, 2, 3, 3, 3, 3, 6,6,6,1,
+        1, 2, 3, 3, 3, 3, 6,6,6,0,1,11],
+          type: "line"
+        }
+      ]
+    };
+  }
+}
 </script>
 
 <style scoped lang='scss'>

@@ -2,7 +2,7 @@
   <Layout>
   <div class="topBar">
     <Tabs classPrefix="type" :data-source="recordtypeList" />
-      <ul class="tab-bar">
+    <ul class="tab-bar">
       <li
       v-for=" item in dataTime"
       :key="item"
@@ -11,8 +11,8 @@
       >{{ item }}</li>
     </ul>
     </div>
-   <StatChart/>
-   <Ranking/> 
+  <StatChart />
+ <Ranking/>
   </Layout>
 </template>
 
