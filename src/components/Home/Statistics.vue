@@ -1,5 +1,5 @@
 <template>
-  <ol v-if="recordList.length" class="statistic">
+  <ol v-if="groupList.length" class="statistic">
     <li v-for="(group,index) in groupList" :key="index">
       <div @click="active(group.title)" class="list">
         <div class="time">{{ beautify(group.title) }}</div>
@@ -53,6 +53,8 @@ export default class Statistics extends Vue {
   recordList: RecordItem[] = [];
   created() {
     this.actived = JSON.parse(window.localStorage.getItem("actived") || "[]");
+    this.$store.commit("fetchRecords");
+    this.recordList = this.$store.state.recordList;
       EventBus.$on("getIsoString", (res: string) => {
       this.recordList = (this.$store.state as RootState).recordList.filter(
         item => dayjs(item.createdAt).format("YYYY-MM") === res
@@ -67,7 +69,6 @@ export default class Statistics extends Vue {
     }
   }
   beforeDestroy() {
-    console.log("组件消失");
     window.localStorage.setItem("actived", JSON.stringify(this.actived));
   }
   active(item: String) {
@@ -84,6 +85,7 @@ export default class Statistics extends Vue {
 
   get groupList() {
     const { recordList } = this;
+    
     if (recordList.length === 0) return [];
     type HashTableValue = { title: string; items: RecordItem[] };
     type result = {
@@ -135,9 +137,7 @@ export default class Statistics extends Vue {
     this.$store.commit("setTotal", { totalIncome, paytotal });
     return result;
   }
-  beforeCreate() {
-    this.$store.commit("fetchRecords");
-  }
+ 
   beautify(string: string) {
     const day = dayjs(string);
     const now = dayjs();

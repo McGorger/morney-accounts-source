@@ -27,21 +27,7 @@
         <label>
           <span class="name">日期</span>
           <div class="input">
-            <input
-              @input="changeValueYear(record.createdAt,$event)"
-              type="datetime-local"
-              :value="currentAt(record.createdAt)"
-            />年
-            <input
-              @input="changeValueMonth(record.createdAt,$event)"
-              type="datetime-local"
-              :value="currentAt(record.createdAt)"
-            />月
-            <input
-              @input="changeValueday(record.createdAt,$event)"
-              type="datetime-local"
-              :value="currentAt(record.createdAt)"
-            />日
+            {{  currentAt(record.createdAt) }}
           </div>
         </label>
       </li>
@@ -83,40 +69,8 @@ export default class Edit extends Vue {
    this.record.notes = e.target.value; 
  }
   currentAt(iso: string) {
-    this.isoString = dayjs(iso).format("YYYY-MM-DDThh:ss");
-    console.log(this.isoString);
+    this.isoString = dayjs(iso).format("YYYY年MM月DD日");
     return this.isoString;
-  }
-  changeValueYear(value: string, e: any) {
-    if (dayjs(e.target.value).valueOf() - dayjs(value).valueOf() > 0) {
-      this.record.createdAt = dayjs(value).add(1, "year").toISOString();
-    } else {
-      this.record.createdAt = dayjs(value).subtract(1, "year").toISOString();
-    }
-  }
-  changeValueMonth(value: string, e: any) {
-    if (dayjs(e.target.value).valueOf() - dayjs(value).valueOf() > 0) {
-     
-      this.record.createdAt = dayjs(value)
-        .add(1, "month")
-        .toISOString();
-    } else {
-      this.record.createdAt = dayjs(value)
-        .subtract(1, "month")
-        .toISOString();
-    }
-  }
-  changeValueday(value: string, e: any) {
-    if (dayjs(e.target.value).valueOf() - dayjs(value).valueOf() > 0) {
-  
-      this.record.createdAt = dayjs(value)
-        .add(1, "day")
-        .toISOString();
-    } else {
-      this.record.createdAt = dayjs(value)
-        .subtract(1, "day")
-        .toISOString();
-    }
   }
   changeOk(){
     this.$store.commit('updateRecord',this.record)

@@ -23,13 +23,16 @@ import { Component, Prop } from "vue-property-decorator";
 import router from "../../router/index";
 @Component
 export default class Tags extends Vue {
-   @Prop({required:true,type:String}) 
-     currentTag!: string; 
+ @Prop({required:true,type:String}) 
+     currentTag!: string;  
   get Taglist(){
     const currentag  = this.$store.state.tagList[this.currentTag]
-     this.selectedTag = currentag[0].tagName; 
-     this.$emit("update:value", currentag[0]);
-    return this.$store.state.tagList[this.currentTag]
+    if(currentag&&currentag.length){
+      this.selectedTag = currentag[0].tagName; 
+      this.$emit("update:value", currentag[0]);
+      return this.$store.state.tagList[this.currentTag];
+    }
+    return []
   }
   selectedTag:string = '';
   created() {

@@ -1,29 +1,23 @@
 <template>
   <div class="logo">
     <div class="bg-top">
-      <div
-       class="calendar">
-        <div 
-        @click="frontClick"
-        class="front">
+      <div class="calendar">
+        <div @click="frontClick" class="front">
           <span></span>
         </div>
-        <div
-         class="input">
-           <input type="date" :value="x(isoString)">年 
-            <input type="date" :value="x(isoString)" />月
+        <div class="input">
+          <span>{{ YearMonth.year }}年</span>
+          <span>{{ YearMonth.month+1}}月</span>
         </div>
-        <div
-        @click="afterClick"
-        class="after">
+        <div @click="afterClick" class="after">
           <span></span>
         </div>
       </div>
     </div>
     <div class="bg-bottom"></div>
     <div class="content">
-     <div class="logo-img">
-      <svg
+      <div class="logo-img">
+        <svg
           t="1594207674727"
           class="icon"
           viewBox="0 0 1025 1024"
@@ -92,28 +86,35 @@ import { EventBus } from "@/event-bus.ts";
 import { Component, Prop, Watch } from "vue-property-decorator";
 @Component
 export default class Logo extends Vue {
-  isoString: string = new Date().toISOString();
-  i:number=0;
+  isoString: string = dayjs(new Date().toISOString()).format("YYYY-MM-DD");
+  i: number = 0;
+  // year:number=0;
+  // month:number=0;
   x(iso: string) {
-    this.isoString =  dayjs(iso).format("YYYY-MM-DD");
+    this.isoString = dayjs(iso).format("YYYY-MM-DD");
     return this.isoString;
   }
-  @Watch('isoString')
-  isoStringChage(){
-     EventBus.$emit("getIsoString", dayjs(this.isoString).format("YYYY-MM")); 
+  @Watch("isoString")
+  isoStringChage() {
+    EventBus.$emit("getIsoString", dayjs(this.isoString).format("YYYY-MM"));
+    dayjs(this.isoString).year();
   }
- frontClick(){
-   const dayFront =  dayjs(this.isoString);
-   const now = dayjs();
-   this.isoString=now.subtract(++this.i, "month").format("YYYY-MM-DD");
- }
- afterClick(){
-   const dayFront =  dayjs(this.isoString);
-   const now = dayjs();
-   this.isoString=now.subtract(--this.i, "month").format("YYYY-MM-DD")
-
-}
-
+  get YearMonth() {
+    const year = dayjs(this.isoString).year();
+    const month = dayjs(this.isoString).month();
+    return {
+      year,
+      month
+    };
+  }
+  frontClick() {
+    const now = dayjs();
+    this.isoString = now.subtract(++this.i, "month").format("YYYY-MM-DD");
+  }
+  afterClick() {
+    const now = dayjs();
+    this.isoString = now.subtract(--this.i, "month").format("YYYY-MM-DD");
+  }
 }
 </script>
 
@@ -136,7 +137,7 @@ export default class Logo extends Vue {
       text-align: center;
       display: flex;
       justify-content: center;
-    
+
       .front {
         width: 0;
         height: 0;
@@ -166,54 +167,24 @@ export default class Logo extends Vue {
         position: relative;
         margin-top: 2px;
         span {
-        display: block;
-        width: 0;
-        height: 0;
-         margin-top: 2px;
-        border-left: 8px solid $font-highlight;
-        border-bottom: 8px solid transparent;
-        border-top: 8px solid transparent;
-        position: absolute;
-        left: -10px;
-        top: -10px;
+          display: block;
+          width: 0;
+          height: 0;
+          margin-top: 2px;
+          border-left: 8px solid $font-highlight;
+          border-bottom: 8px solid transparent;
+          border-top: 8px solid transparent;
+          position: absolute;
+          left: -10px;
+          top: -10px;
+        }
       }
-      }
-      .input{
+      .input {
         border: 1px solid gray;
         border-radius: 5px;
-        margin:0 10px;
-        input[type="date"] {
-       
-        text-align: center;
-        
-        font-size: 18px;
-        &::-webkit-calendar-picker-indicator {
-          display: none;
-        }
-        &::-webkit-clear-button {
-          display: none;
-        }
-        &::-webkit-datetime-edit-text {
-             display: none;
-            }
-        &::-webkit-datetime-edit-day-field {
-          display: none;
-        }
-
-         &:first-child{
-           width: 50px;
-         }
-        &:last-child{
-           width: 28px;
-         }
-          &:first-child::-webkit-datetime-edit-month-field{
-          display: none;
-        }
-        &:last-child::-webkit-datetime-edit-year-field{
-          display: none;
-        }
-      }}
-      
+        margin: 0 10px;
+        padding: 1px 5px;
+      }
     }
   }
   .bg-bottom {

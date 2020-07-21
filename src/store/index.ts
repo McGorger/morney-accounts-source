@@ -10,7 +10,8 @@ Vue.use(Vuex)
     recordList: [],
     tagList: {"+":[],"-":[]},
     total:{totalIncome:0,paytotal:0},
-    currentRecord:undefined
+    currentRecord:undefined,
+    createTagError:null
   } as RootState ,
   mutations: {
     setTotal(state,value){
@@ -33,21 +34,47 @@ Vue.use(Vuex)
       window.localStorage.setItem('recordList', JSON.stringify(state.recordList))
     },
     fetchTags(state) {
-      return state.tagList = JSON.parse(window.localStorage.getItem('tagList') || '[]')
+     state.tagList = JSON.parse(window.localStorage.getItem('tagList') || '{"+":[],"-":[]}');
+     console.log(state.tagList['-'].length);
+      if(state.tagList['-'].length===0){
+        console.log(state.tagList['+']);
+        store.commit('createTag',{type:'-',currentTag:'wancan',tagName:'晚餐'});
+        store.commit('createTag',{type:'-',currentTag:'maicai',tagName:'买菜'});
+        store.commit('createTag',{type:'-',currentTag:'clothes',tagName:'衣服'});
+        store.commit('createTag',{type:'-',currentTag:'huodong',tagName:'活动'});
+        store.commit('createTag',{type:'-',currentTag:'hotel',tagName:'酒店'});
+        store.commit('createTag',{type:'-',currentTag:'zuche',tagName:'租车'});
+        store.commit('createTag',{type:'-',currentTag:'feiji',tagName:'飞机'});
+        store.commit('createTag',{type:'-',currentTag:'ETC',tagName:'ETC'});
+        store.commit('createTag',{type:'-',currentTag:'transport',tagName:'交通'});
+        store.commit('createTag',{type:'-',currentTag:'shuidian',tagName:'水电'});
+        store.commit('createTag',{type:'-',currentTag:'lunchaun',tagName:'轮船'});
+        store.commit('createTag',{type:'-',currentTag:'tongxun',tagName:'通讯'});
+        store.commit('createTag',{type:'-',currentTag:'kuzi',tagName:'裤子'});
+        store.commit('createTag',{type:'-',currentTag:'meirong',tagName:'美容'}); 
+        store.commit('createTag',{type:'-',currentTag:'dushu',tagName:'读书'});
+      }else if(state.tagList['+'].length===0){
+        store.commit('createTag',{type:'+',currentTag:'gongzi',tagName:'工资'});
+        store.commit('createTag',{type:'+',currentTag:'waikuai',tagName:'外快'});
+        store.commit('createTag',{type:'+',currentTag:'fenhong',tagName:'分红'});
+        store.commit('createTag',{type:'+',currentTag:'jianzhi',tagName:'兼职'});
+        store.commit('createTag',{type:'+',currentTag:'hongbao',tagName:'红包'});
+        store.commit('createTag',{type:'+',currentTag:'jiekuan',tagName:'借款'});
+        store.commit('createTag',{type:'+',currentTag:'baoxiao',tagName:'报销'});
+        store.commit('createTag',{type:'-',currentTag:'jiangjin',tagName:'奖金'});
+        store.commit('createTag',{type:'+',currentTag:'rongyu',tagName:'荣誉'});
+      }
     },
-    createTag(state,Tag){
+    createTag(state,Tag:{type:string,currentTag:string,tagName:string}){
+      state.createTagError = null;
       const type = Tag.type as "+"|"-";
       const names = state.tagList[type].map(item => item.tagName)
       if (names.indexOf(Tag.tagName) >= 0) {
-        window.alert('标签名重复了');
-        return 'duplicated';
+        state.createTagError  = new Error('tag name duplicated')
+        return;
      }else{
-     
       state.tagList[type].push({tagName:Tag.tagName,currentTag:Tag.currentTag });
       store.commit('saveTags');
-      window.alert('添加成功');
-      router.push('/Money')
-      return 'success';
      }
     },
     saveTags(state){

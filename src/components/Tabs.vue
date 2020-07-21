@@ -18,7 +18,7 @@
     </div>
     </div>
     <div class="right">
-      <slot></slot>
+      <slot name='right'></slot>
     </div>
   </div>
 </template>

@@ -11,6 +11,7 @@ type RootState = {
     tagList: {"+":Tag[],"-":Tag[]};
     total:{totalIncome:number,paytotal:number}
     currentRecord?:RecordItem
+    createTagError:Error|null
   }
 type Tag = {
     tagName: string;

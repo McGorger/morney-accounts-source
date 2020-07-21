@@ -17,8 +17,6 @@ import dayjs from "dayjs";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import ECharts from "@/components/ChartS.vue";
 import _ from "lodash";
-//.daysInMonth()
-console.log(dayjs(new Date()).daysInMonth());
 @Component({
   components: {
     ECharts

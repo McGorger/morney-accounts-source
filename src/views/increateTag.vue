@@ -1,9 +1,10 @@
 <template>
   <div class="tags">
     <Tabs classPrefix="increateTag" data-source="添加类别">
-       <Icon slot="left" name="left" />    
+      <Icon slot="left" name="left" />    
       <Icon
       @click="ok"
+      slot="right"
        name="success" />
     </Tabs>
     <div class="current">
@@ -71,7 +72,14 @@ export default class increateTag extends Vue {
     if(this.tagName ===''){
       alert('请输入标签名')
     }else{
-      this.$store.commit('createTag',{type:this.type,currentTag:this.currentTag,tagName:this.tagName})
+      this.$store.commit('createTag',{type:this.type,currentTag:this.currentTag,tagName:this.tagName});
+      if(this.$store.state.createTagError){
+        if(this.$store.state.createTagError.message ==='tag name duplicated'){
+          window.alert('标签名重复');
+        }
+      }else{
+        this.$router.push('/Money')
+      }
    }
   }
 }
