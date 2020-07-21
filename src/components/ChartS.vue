@@ -15,13 +15,15 @@ export default class ChartS extends Vue {
         }
       const chart = echarts.init(this.$refs.wrapper as HTMLDivElement)
    chart.setOption(this.options);
+   console.log(this.options);
  }
  }
 </script>
 
 <style scoped lang='scss'>
  .wrapper{
-   height: 400px;
+   height: 220px;
+   width: 430%;
  }
  
 </style>
